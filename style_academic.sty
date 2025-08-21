@@ -1,0 +1,35 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style_academic}[2025/08/21 Academic CV style]
+
+\usepackage{CV_temp_common}
+
+% --- Esperienze lavorative standard ---
+\newcommand{\experience}[4]{%
+  \noindent\textbf{#3} \hfill {\small #1}\\
+  \emph{#2}\\[-2pt]
+  \begin{itemize}[leftmargin=*, topsep=2pt] #4 \end{itemize}
+  \vspace{0.3em}
+}
+
+% --- Eventi artistici (concerti, performance, ecc.) ---
+\newcommand{\artisticevent}[6]{%
+  \noindent\textbf{#4} \hfill {\small #1}\\
+  \emph{#2} -- #3\\[-2pt]
+  \textbf{Organico:} #5\\
+  \textbf{Programma:} #6
+  \vspace{0.5em}
+}
+
+% --- Formato istruzione ---
+\newcommand{\education}[4]{%
+  \noindent\textbf{#3} \hfill {\small #1}\\
+  \emph{#2}\\[-2pt]
+  #4\par\vspace{0.3em}
+}
+
+% --- Sezioni per raggruppare ---
+\newcommand{\cvsection}[2]{
+  \section*{#1}
+  #2
+}
