@@ -8,6 +8,7 @@ import yaml
 import argparse
 from pathlib import Path
 from typing import Dict, Any, List
+import re
 
 
 class CVGenerator:
@@ -16,19 +17,52 @@ class CVGenerator:
         with open(yaml_file, 'r', encoding='utf-8') as f:
             self.data = yaml.safe_load(f)
     
+    def latex_escape(self, text: str) -> str:
+        """Escape dei caratteri speciali LaTeX"""
+        if not text:
+            return ""
+        
+        # Dizionario dei caratteri da escapare
+        latex_special_chars = {
+            '&': r'\&',
+            '%': r'\%',
+            '$': r'\$',
+            '#': r'\#',
+            '^': r'\^{}',
+            '_': r'\_',
+            '{': r'\{',
+            '}': r'\}',
+            '~': r'\~{}',
+            '\\': r'\textbackslash{}'
+        }
+        
+        # Applica l'escape
+        for char, escape in latex_special_chars.items():
+            text = text.replace(char, escape)
+        
+        return text
+    
     def generate_personal_data(self) -> str:
         """Genera i comandi LaTeX per i dati personali"""
         personal = self.data['dati_personali']
         
         latex = f"% --- Dati personali ---\n"
-        latex += f"\\name{{{personal['nome']}}}\n"
-        latex += f"\\role{{{personal['ruolo']}}}\n"
-        latex += f"\\contacts{{{personal['citta']}}}{{{personal['telefono']}}}{{{personal['email']}}}{{{personal['portfolio']}}}\n"
+        latex += f"\\name{{{self.latex_escape(personal['nome'])}}}\n"
+        latex += f"\\role{{{self.latex_escape(personal['ruolo'])}}}\n"
+        latex += f"\\contacts{{{self.latex_escape(personal['citta'])}}}{{{personal['telefono']}}}{{{personal['email']}}}{{{personal['portfolio']}}}\n"
         
         if 'foto' in personal:
             latex += f"\\photo{{{personal['foto']}}}\n"
         
         return latex + "\n"
+    
+    def generate_summary(self) -> str:
+        """Genera il summary professionale"""
+        if 'summary' not in self.data:
+            return ""
+        
+        summary_text = self.latex_escape(self.data['summary'])
+        return f"% --- Summary ---\n\\summary{{{summary_text}}}\n\n"
     
     def generate_skills(self) -> str:
         """Genera la sezione competenze"""
@@ -40,7 +74,9 @@ class CVGenerator:
         
         if 'competenze_audio' in tools:
             for skill in tools['competenze_audio']:
-                latex += f"  \\item {skill}\n"
+                # IMPORTANTE: Applica l'escape LaTeX qui
+                escaped_skill = self.latex_escape(skill)
+                latex += f"  \\item {escaped_skill}\n"
         
         latex += "}\n\n"
         return latex
@@ -53,9 +89,13 @@ class CVGenerator:
         latex = "% --- Esperienze ---\n"
         
         for exp in self.data['esperienze_professionali']:
-            mansioni = '\n'.join([f"  \\item {m}" for m in exp['mansioni']])
+            # Escape delle mansioni
+            mansioni_escaped = []
+            for mansione in exp['mansioni']:
+                mansioni_escaped.append(f"  \\item {self.latex_escape(mansione)}")
+            mansioni = '\n'.join(mansioni_escaped)
             
-            latex += f"\\experience{{{exp['periodo']}}}{{{exp['organizzazione']}}}{{{exp['ruolo']}}}{{\n"
+            latex += f"\\experience{{{exp['periodo']}}}{{{self.latex_escape(exp['organizzazione'])}}}{{{self.latex_escape(exp['ruolo'])}}}{{\n"
             latex += f"{mansioni}\n"
             latex += "}\n\n"
         
@@ -70,9 +110,9 @@ class CVGenerator:
         
         for edu in self.data['istruzione']:
             voto_dettagli = f" ({edu['voto']})" if 'voto' in edu else ""
-            dettagli = edu.get('dettagli', '')
+            dettagli = self.latex_escape(edu.get('dettagli', ''))
             
-            latex += f"\\education{{{edu['anno']}}}{{{edu['istituto']}}}{{{edu['titolo']}{voto_dettagli}}}{{{dettagli}}}\n\n"
+            latex += f"\\education{{{edu['anno']}}}{{{self.latex_escape(edu['istituto'])}}}{{{self.latex_escape(edu['titolo'])}{voto_dettagli}}}{{{dettagli}}}\n\n"
         
         return latex
     
@@ -88,7 +128,7 @@ class CVGenerator:
             if 'programma' in event:
                 # Evento con più brani (es. Generazioni Elettroacustiche)
                 for brano in event['programma']:
-                    latex += f"\\artisticevent{{{event['data']}}}{{{event['venue']}}}{{{event['organizzatore']}}}{{{brano['titolo']}}}{{{brano['organico']}}}{{{brano.get('note', brano['ruolo'])}}}\n\n"
+                    latex += f"\\artisticevent{{{event['data']}}}{{{self.latex_escape(event['venue'])}}}{{{self.latex_escape(event['organizzatore'])}}}{{{self.latex_escape(brano['titolo'])}}}{{{self.latex_escape(brano['organico'])}}}{{{self.latex_escape(brano.get('note', brano['ruolo']))}}}\n\n"
             else:
                 # Evento singolo
                 organico = event.get('organico', '')
@@ -101,7 +141,7 @@ class CVGenerator:
                 
                 titolo = event.get('titolo', event.get('evento', ''))
                 
-                latex += f"\\artisticevent{{{event['data']}}}{{{event['venue']}}}{{{event['organizzatore']}}}{{{titolo}}}{{{organico}}}{{{programma}}}\n\n"
+                latex += f"\\artisticevent{{{event['data']}}}{{{self.latex_escape(event['venue'])}}}{{{self.latex_escape(event['organizzatore'])}}}{{{self.latex_escape(titolo)}}}{{{self.latex_escape(organico)}}}{{{self.latex_escape(programma)}}}\n\n"
         
         return latex
     
@@ -114,7 +154,7 @@ class CVGenerator:
         
         lang_strings = []
         for lang in self.data['lingue']:
-            lang_strings.append(f"{lang['nome']}: {lang['livello']}")
+            lang_strings.append(f"{self.latex_escape(lang['nome'])}: {self.latex_escape(lang['livello'])}")
         
         latex += " \\\\\\\\ ".join(lang_strings) + "\n\n"
         return latex
@@ -128,6 +168,8 @@ class CVGenerator:
         latex = "% File: cv_data.tex (generato automaticamente)\n\n"
         
         latex += self.generate_personal_data()
+        latex += f"\\makeheader"
+        latex += self.generate_summary()  # Il summary va dopo i dati personali
         latex += self.generate_skills()
         latex += self.generate_experiences()
         latex += self.generate_education()
@@ -137,7 +179,7 @@ class CVGenerator:
         
         return latex
     
-    def generate_main_tex(self, style: str = "european") -> str:
+    def generate_main_tex(self, style: str = "european", styles_dir: str = "styles") -> str:
         """Genera il file principale LaTeX"""
         latex = f"""%!TEX root = CV_GIULIO_DE_MATTIA.tex
 %!TEX TS-program = xelatex
@@ -145,22 +187,19 @@ class CVGenerator:
 
 \\documentclass[a4paper,10pt]{{article}}
 
-% Stile scelto: {style}
-\\usepackage{{style_{style}}}
+% Carica direttamente il file di stile dal path relativo
+\\usepackage{{{styles_dir}/style_{style}}}
 
 \\begin{{document}}
 
 % PRIMA definisci i dati
 \\input{{cv_data.tex}}
 
-% POI crea l'header
-\\makeheader
-
 \\end{{document}}
 """
         return latex
     
-    def save_files(self, output_dir: str = ".", style: str = "european"):
+    def save_files(self, output_dir: str = ".", style: str = "european", styles_dir: str = "styles"):
         """Salva i file generati"""
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
@@ -170,12 +209,14 @@ class CVGenerator:
         (output_path / "cv_data.tex").write_text(data_content, encoding='utf-8')
         
         # Genera file principale
-        main_content = self.generate_main_tex(style)
+        main_content = self.generate_main_tex(style, styles_dir)
         (output_path / "CV_GIULIO_DE_MATTIA.tex").write_text(main_content, encoding='utf-8')
         
         print(f"✅ File generati in {output_path}:")
         print(f"   - cv_data.tex")
         print(f"   - CV_GIULIO_DE_MATTIA.tex (stile: {style})")
+        print(f"   - Cerca file .sty in: {styles_dir}/")
+
 
 
 def main():
@@ -183,6 +224,8 @@ def main():
     parser.add_argument("yaml_file", help="File YAML con i dati del CV")
     parser.add_argument("--style", choices=["academic", "european"], 
                        default="european", help="Stile del CV")
+    parser.add_argument("--styles-dir", default="styles", 
+                       help="Cartella contenente i file .sty")
     parser.add_argument("--output", "-o", default=".", 
                        help="Directory di output")
     
@@ -190,7 +233,7 @@ def main():
     
     try:
         generator = CVGenerator(args.yaml_file)
-        generator.save_files(args.output, args.style)
+        generator.save_files(args.output, args.style, args.styles_dir)
         
         print(f"\n🚀 Per compilare:")
         print(f"   cd {args.output}")
