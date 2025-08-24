@@ -9,7 +9,7 @@ dati_personali:
   telefono: "+39 342 3232 342"
   email: "giuliodemattia21@gmail.com"
   portfolio: "https://github.com/DMGiulioRomano \\\\ https://soundcloud.com/giulio-romano-de-mattia"
-  foto: "../img/fotoInfinitiPossibili"
+  foto: "img/fotoInfinitiPossibili"
   nazionalita: "Italiana"
 
 summary: "Compositore e live electronics specializzato in spazializzazione multicanale e regia del suono per musica contemporanea. Ho curato prime assolute e catene elettroacustiche in contesti istituzionali (ArteScienza/CRM, Conservatori S. Cecilia e A. Casella), con focus su feedback e interazione spazio--ambiente. Produco tool audio in Max/MSP, Pure Data, JUCE e workflow documentati open source."

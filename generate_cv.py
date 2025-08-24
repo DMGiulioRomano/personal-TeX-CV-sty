@@ -162,7 +162,50 @@ class CVGenerator:
     def generate_gdpr(self) -> str:
         """Genera la sezione consenso GDPR"""
         return "% --- Consenso GDPR ---\n\\section*{Consenso}\nAutorizzo il trattamento dei dati ai sensi del Reg. UE 2016/679.\n"
-    
+
+    def generate_teaching(self) -> str:
+        """Genera la sezione insegnamento"""
+        if 'insegnamento' not in self.data:
+            return ""
+        
+        latex = "% --- Insegnamento ---\n"
+        
+        for teaching in self.data['insegnamento']:
+            # Estrae i dati dal dizionario con valori di default sicuri
+            periodo = teaching.get('periodo', '')
+            istituto = self.latex_escape(teaching.get('istituto', ''))
+            titolo_progetto = self.latex_escape(teaching.get('titolo_progetto', ''))
+            
+            # Costruisce la lista dei dettagli come itemize
+            dettagli_items = []
+            
+            # Target (obbligatorio nel tuo esempio)
+            if 'target' in teaching:
+                dettagli_items.append(f"  \\item Target: {self.latex_escape(teaching['target'])}")
+            
+            # Numero partecipanti
+            if 'partecipanti' in teaching:
+                dettagli_items.append(f"  \\item Partecipanti: {self.latex_escape(teaching['partecipanti'])}")
+            
+            # Bando vinto (opzionale)
+            if 'bando_vinto' in teaching and teaching['bando_vinto'].strip():
+                dettagli_items.append(f"  \\item Bando: {self.latex_escape(teaching['bando_vinto'])}")
+            
+            # Metodologia
+            if 'metodologia' in teaching:
+                dettagli_items.append(f"  \\item Metodologia: {self.latex_escape(teaching['metodologia'])}")
+            
+            # Genera il comando LaTeX usando il formato \experience esistente
+            # \experience{periodo}{organizzazione}{ruolo}{mansioni_itemize}
+            latex += f"\\experience{{{periodo}}}{{{istituto}}}{{{titolo_progetto}}}{{\n"
+            
+            # Aggiunge tutti gli item dei dettagli
+            latex += '\n'.join(dettagli_items)
+            
+            latex += "\n}\n\n"
+        
+        return latex
+
     def generate_latex_data(self) -> str:
         """Genera il file cv_data.tex completo"""
         latex = "% File: cv_data.tex (generato automaticamente)\n\n"
@@ -170,9 +213,10 @@ class CVGenerator:
         latex += self.generate_personal_data()
         latex += f"\\makeheader"
         latex += self.generate_summary()  # Il summary va dopo i dati personali
+        latex += self.generate_education()
         latex += self.generate_skills()
         latex += self.generate_experiences()
-        latex += self.generate_education()
+        latex += self.generate_teaching() 
         latex += self.generate_artistic_events()
         latex += self.generate_languages()
         latex += self.generate_gdpr()
