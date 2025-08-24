@@ -36,14 +36,14 @@
   
   % Foto e informazioni su due colonne
   \noindent
-  \begin{minipage}[c]{0.25\textwidth}
+  \begin{minipage}[c]{0.35\textwidth}
     \ifx\@photo\undefined
     \else
       \includegraphics[width=\linewidth]{\@photo}
     \fi
   \end{minipage}%
   \hfill
-  \begin{minipage}[c]{0.7\textwidth}
+  \begin{minipage}[c]{0.6\textwidth}
     {\Huge \textbf{\@name}} \\[1cm]
     {\Large \@role}\\[6pt]
     \@city \\ \@phone \\ \@mail \\ \@link
@@ -56,4 +56,4 @@
 \titleformat{\subsection}{\bfseries}{}{0pt}{}
 
 \newcommand{\summary}[1]{\section*{Profilo}\noindent #1}
-\newcommand{\skills}[1]{\section*{Competenze chiave}\begin{itemize}[leftmargin=*]#1\end{itemize}}
+\newcommand{\skills}[1]{\begin{itemize}[leftmargin=.7cm, itemsep=0pt, parsep=2pt, topsep=0pt]#1\end{itemize}}

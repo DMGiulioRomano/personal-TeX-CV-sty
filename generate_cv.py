@@ -16,9 +16,9 @@ class CVGenerator:
         """Inizializza il generatore con i dati dal file YAML"""
         with open(yaml_file, 'r', encoding='utf-8') as f:
             self.data = yaml.safe_load(f)
-    
+        
     def latex_escape(self, text: str) -> str:
-        """Escape dei caratteri speciali LaTeX"""
+        """Escape dei caratteri speciali LaTeX, ignorando le espressioni matematiche $...$"""
         if not text:
             return ""
         
@@ -35,13 +35,27 @@ class CVGenerator:
             '~': r'\~{}',
             '\\': r'\textbackslash{}'
         }
+
+        # Funzione per fare l'escape del testo normale
+        def escape_text(t):
+            for char, esc in latex_special_chars.items():
+                t = t.replace(char, esc)
+            return t
+
+        # Split del testo in parti "normale" e "matematica"
+        parts = re.split(r'(\$.*?\$)', text)  # mantiene anche i delimitatori $
+        escaped_parts = []
+        for part in parts:
+            if part.startswith('$') and part.endswith('$'):
+                # È un'espressione matematica: non fare escape
+                escaped_parts.append(part)
+            else:
+                # Testo normale: fare escape
+                escaped_parts.append(escape_text(part))
         
-        # Applica l'escape
-        for char, escape in latex_special_chars.items():
-            text = text.replace(char, escape)
-        
-        return text
-    
+        return ''.join(escaped_parts)
+
+
     def generate_personal_data(self) -> str:
         """Genera i comandi LaTeX per i dati personali"""
         personal = self.data['dati_personali']
@@ -70,7 +84,7 @@ class CVGenerator:
             return ""
         
         tools = self.data['tool_digitali']
-        latex = "% --- Competenze ---\n\\skills{\n"
+        latex = "% --- Competenze ---\n\\section*{Competenze Tecniche}\n\\skills{\n"
         
         if 'competenze_audio' in tools:
             for skill in tools['competenze_audio']:
@@ -86,7 +100,7 @@ class CVGenerator:
         if 'esperienze_professionali' not in self.data:
             return ""
         
-        latex = "% --- Esperienze ---\n"
+        latex = "% --- Esperienze ---\n\\section*{Esperienza Professionale}\n"
         
         for exp in self.data['esperienze_professionali']:
             # Escape delle mansioni
@@ -106,7 +120,7 @@ class CVGenerator:
         if 'istruzione' not in self.data:
             return ""
         
-        latex = "% --- Istruzione ---\n"
+        latex = "% --- Formazione ---\n\\section*{Formazione}\n"
         
         for edu in self.data['istruzione']:
             voto_dettagli = f" ({edu['voto']})" if 'voto' in edu else ""
@@ -121,7 +135,7 @@ class CVGenerator:
         if 'attivita_concertistica' not in self.data:
             return ""
         
-        latex = "% --- Attività selezionate ---\n"
+        latex = "% --- Attività Concertistica ---\n\\section*{Attività Concertistica}\n"
         
         for event in self.data['attivita_concertistica']:
             # Gestisce eventi con programma multiplo
@@ -141,40 +155,54 @@ class CVGenerator:
                 
                 titolo = event.get('titolo', event.get('evento', ''))
                 
-                latex += f"\\artisticevent{{{event['data']}}}{{{self.latex_escape(event['venue'])}}}{{{self.latex_escape(event['organizzatore'])}}}{{{self.latex_escape(titolo)}}}{{{self.latex_escape(organico)}}}{{{self.latex_escape(programma)}}}\n\n"
+                latex += (
+                    f"\\artisticevent"
+                    f"{{{event['data']}}}"  # #1 data
+                    f"{{{self.latex_escape(event['venue'])}}}"  # #2 venue
+                    f"{{{self.latex_escape(event['organizzatore'])}}}"  # #3 organizzatore
+                    f"{{{self.latex_escape(titolo)}}}"  # #4 titolo
+                    f"{{{self.latex_escape(organico)}}}"  # #5 organico
+                    f"{{{self.latex_escape(event.get('ruolo', ''))}}}"  # #6 ruolo (nuovo)
+                    f"{{{self.latex_escape(programma)}}}"  # #7 programma/note
+                    "\n\n"
+                )
         
         return latex
     
     def generate_languages(self) -> str:
-        """Genera la sezione lingue"""
+        """Genera le lingue come itemize usando il comando \languageitem"""
         if 'lingue' not in self.data:
             return ""
         
         latex = "% --- Lingue ---\n\\section*{Lingue}\n"
+        latex += "\\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=1pt]\n"
         
-        lang_strings = []
         for lang in self.data['lingue']:
-            lang_strings.append(f"{self.latex_escape(lang['nome'])}: {self.latex_escape(lang['livello'])}")
+            for nome, livello in lang.items():
+                nome_clean = self.latex_escape(nome).replace('\n', ' ').strip()
+                livello_clean = self.latex_escape(livello).replace('\n', ' ').strip()
+                latex += f"  \\languageitem{{{nome_clean}}}{{{livello_clean}}}\n"
         
-        latex += " \\\\\\\\ ".join(lang_strings) + "\n\n"
+        latex += "\\end{itemize}\n\n"
         return latex
+
     
     def generate_gdpr(self) -> str:
         """Genera la sezione consenso GDPR"""
-        return "% --- Consenso GDPR ---\n\\section*{Consenso}\nAutorizzo il trattamento dei dati ai sensi del Reg. UE 2016/679.\n"
+        return "% --- Consenso GDPR ---\n\\section*{Consenso}\nAutorizzo il trattamento dei miei dati personali ai sensi del Decreto Legislativo 196 del 30 giugno 2003 e dell'art. 13 del GDPR (Regolamento UE 2016/679) ai fini della ricerca e selezione del personale.\n"
 
     def generate_teaching(self) -> str:
         """Genera la sezione insegnamento"""
         if 'insegnamento' not in self.data:
             return ""
         
-        latex = "% --- Insegnamento ---\n"
+        latex = "% --- Didattica ---\n\\section*{Attività Didattica}\n"
         
         for teaching in self.data['insegnamento']:
             # Estrae i dati dal dizionario con valori di default sicuri
             periodo = teaching.get('periodo', '')
             istituto = self.latex_escape(teaching.get('istituto', ''))
-            titolo_progetto = self.latex_escape(teaching.get('titolo_progetto', ''))
+            titolo_progetto = self.latex_escape(teaching.get('titolo_progetto', teaching.get('tipo', '')))
             
             # Costruisce la lista dei dettagli come itemize
             dettagli_items = []
@@ -185,11 +213,15 @@ class CVGenerator:
             
             # Numero partecipanti
             if 'partecipanti' in teaching:
-                dettagli_items.append(f"  \\item Partecipanti: {self.latex_escape(teaching['partecipanti'])}")
+                dettagli_items.append(f"  \\item Partecipanti: {self.latex_escape(str(teaching['partecipanti']))}")
             
             # Bando vinto (opzionale)
             if 'bando_vinto' in teaching and teaching['bando_vinto'].strip():
                 dettagli_items.append(f"  \\item Bando: {self.latex_escape(teaching['bando_vinto'])}")
+            
+            # Focus
+            if 'focus' in teaching:
+                dettagli_items.append(f"  \\item Focus: {self.latex_escape(teaching['focus'])}")
             
             # Metodologia
             if 'metodologia' in teaching:
@@ -206,19 +238,57 @@ class CVGenerator:
         
         return latex
 
+    def generate_projects(self) -> str:
+        """Genera la sezione progetti"""
+        if 'pubblicazioni' not in self.data:
+            return ""
+        
+        latex = "% --- Progetti ---\n\\section*{Progetti e Collaborazioni}\n"
+        
+        # Progetti personali
+        if 'progetti_personali' in self.data['pubblicazioni']:
+            for progetto in self.data['pubblicazioni']['progetti_personali']:
+                latex += f"\\experience{{{progetto.get('periodo', 'In corso')}}}{{{self.latex_escape(progetto.get('sede', progetto.get('sedi', '')))}}}{{{self.latex_escape(progetto['nome'])}}}{{\n"
+                
+                if 'descrizione' in progetto:
+                    latex += f"  \\item {self.latex_escape(progetto['descrizione'])}\n"
+                if 'focus' in progetto:
+                    latex += f"  \\item Focus: {self.latex_escape(progetto['focus'])}\n"
+                if 'metodologia' in progetto:
+                    latex += f"  \\item Metodologia: {self.latex_escape(progetto['metodologia'])}\n"
+                if 'obiettivi' in progetto:
+                    latex += f"  \\item Obiettivi: {self.latex_escape(progetto['obiettivi'])}\n"
+                
+                latex += "}\n\n"
+        
+        # Competenze relazionali (progetti di coordinamento)
+        if 'competenze_relazionali' in self.data['pubblicazioni']:
+            for competenza in self.data['pubblicazioni']['competenze_relazionali']:
+                latex += f"\\experience{{{competenza.get('periodo', 'Coordinamento')}}}{{{self.latex_escape(competenza.get('sede', ''))}}}{{{self.latex_escape(competenza['progetto'])}}}{{\n"
+                
+                if 'team' in competenza:
+                    latex += f"  \\item Team: {self.latex_escape(competenza['team'])}\n"
+                if 'competenze' in competenza:
+                    latex += f"  \\item Competenze: {self.latex_escape(competenza['competenze'])}\n"
+                
+                latex += "}\n\n"
+        
+        return latex
+
     def generate_latex_data(self) -> str:
         """Genera il file cv_data.tex completo"""
         latex = "% File: cv_data.tex (generato automaticamente)\n\n"
         
         latex += self.generate_personal_data()
-        latex += f"\\makeheader"
+        latex += "\\makeheader\n\n"
         latex += self.generate_summary()  # Il summary va dopo i dati personali
         latex += self.generate_education()
+        latex += self.generate_languages()
         latex += self.generate_skills()
         latex += self.generate_experiences()
         latex += self.generate_teaching() 
         latex += self.generate_artistic_events()
-        latex += self.generate_languages()
+        latex += self.generate_projects()
         latex += self.generate_gdpr()
         
         return latex

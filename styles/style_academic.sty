@@ -7,26 +7,34 @@
 % --- Esperienze lavorative standard ---
 \newcommand{\experience}[4]{%
   \noindent\textbf{#3} \hfill {\small #1}\\
-  \emph{#2}\\[-2pt]
-  \begin{itemize}[leftmargin=*, topsep=2pt] #4 \end{itemize}
-  \vspace{0.3em}
+  \hspace*{1em}\emph{#2}\\[-2pt]
+  \vspace{-\baselineskip}
+  \begin{itemize}[leftmargin=.7cm, topsep=2pt, itemsep=0pt, parsep=0pt, label={\textbullet}] #4 \end{itemize}
+  \vspace{1em}
 }
 
 % --- Eventi artistici (concerti, performance, ecc.) ---
-\newcommand{\artisticevent}[6]{%
+\newcommand{\artisticevent}[7]{%
   \noindent\textbf{#4} \hfill {\small #1}\\
-  \emph{#2} -- #3\\[-2pt]
-  \textbf{Organico:} #5\\
-  \textbf{Programma:} #6
-  \vspace{0.5em}
+  \hspace*{1em}\emph{#2} -- #3\\[-2pt]
+  \hspace*{2em}\textbf{Ruolo:} #6\\
+  \hspace*{2em}\textbf{Organico:} #5\\
+  \hspace*{2em}\textbf{Programma:} #7
+  \hspace*{2em}\vspace{0.5em}
 }
 
 % --- Formato istruzione ---
 \newcommand{\education}[4]{%
   \noindent\textbf{#3} \hfill {\small #1}\\
-  \emph{#2}\\[-2pt]
+  \emph{#2}\\[-1pt]
   #4\par\vspace{0.3em}
 }
+
+% --- Lingue come itemize ---
+\newcommand{\languageitem}[2]{%
+  \item \textbf{#1}: {\small #2}%
+}
+
 
 % --- Sezioni per raggruppare ---
 \newcommand{\cvsection}[2]{
