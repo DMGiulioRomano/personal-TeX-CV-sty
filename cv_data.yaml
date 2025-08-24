@@ -39,17 +39,9 @@ esperienze_professionali:
     ruolo: "Assistente tecnico-musicale"
     luogo: "Goethe-Institut"
     mansioni:
-      - "Regia del suono e live electronics per prime assolute (16-24ch)"
+      - "Regia del suono e live electronics per prime assolute"
       - "Ottimizzazione acustica sala/installazioni"
-      - "Coordinamento palco e tecnica con Goethe-Institut"
-  
-  - periodo: "10/2024 -- oggi"
-    organizzazione: "Laboratorio bambini 3-5 anni"
-    ruolo: "Conduttore laboratorio"
-    luogo: "Roma"
-    mansioni:
-      - "Ideazione e conduzione di laboratorio timbrico (8-12 partecipanti)"
-      - "Micro-moduli di ascolto attivo e documentazione audio"
+      - "Assistenza al coordinamento e alla direzione artistica"
   
   - periodo: "10-11/2023"
     organizzazione: "Easylight S.R.L."
@@ -57,15 +49,22 @@ esperienze_professionali:
     mansioni:
       - "FOH per conferenze/spettacoli (platea 150-400)"
       - "Inventariazione e controllo attrezzature, ripristino asset in 24h"
-      - "Supporto lighting (20-40 fixture)"
+      - "Supporto lighting (20-40 fixture)"  
 
 insegnamento:
   - periodo: "10/2024 -- oggi"
-    tipo: "Laboratorio musicale"
+    tipo: "Laboratorio musicale Infanzia"
     target: "Bambini 3-5 anni"
     partecipanti: "8-12"
     focus: "Laboratorio timbrico, ascolto attivo, musica contemporanea"
-    metodologia: "Attività ludiche e interattive per sviluppo senso ritmico e percezione musicale"
+    metodologia: "Attività interattive per sviluppo senso ritmico e percezione musicale"
+
+  - periodo: "02/2025 -- 06/2025"
+    tipo: "Laboratorio musicale Medie"
+    target: "Bambini 11-14 anni"
+    partecipanti: "10"
+    focus: "Laboratorio di ascolto attivo, musica contemporanea"
+    metodologia: "Attività interattive per sviluppo senso ritmico e percezione musicale"
 
 tool_digitali:
   linguaggi_programmazione:
