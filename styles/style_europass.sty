@@ -1,0 +1,190 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style_europass}[2025/08/21 Europass CV style - EU compliant]
+
+% ==========================================
+% IMPORT MODULI SPECIALIZZATI
+% ==========================================
+\RequirePackage{cv_base}                    % Comandi dati base (\name, \role, etc.)
+\RequirePackage{cv_fonts_institutional}     % Font Arial/Liberation, no icone
+\RequirePackage{cv_geometry_standard}       % Margini 20mm, layout tabellare
+
+% ==========================================
+% HEADER EUROPASS - Formato UE Standard
+% ==========================================
+\renewcommand{\makeheader}{
+  % Nome centrato e prominente (standard Europass)
+  \begin{center}
+    {\fontsize{20}{24}\selectfont\bfseries\MakeUppercase{\@name}}\\[0.5em]
+    {\large\@role}
+  \end{center}
+  \vspace{1em}
+  
+  % Tabella informazioni personali (formato UE standard)
+  \noindent
+  \begin{tabular}{@{}ll@{}}
+    \textbf{Indirizzo} & \@city \\[2pt]
+    \textbf{Telefono} & \@phone \\[2pt]
+    \textbf{E-mail} & \@mail \\[2pt]
+    \ifx\@link\undefined\else
+    \textbf{Profilo web} & \@link \\[2pt]
+    \fi
+  \end{tabular}
+  \vspace{1.5em}
+}
+
+% ==========================================
+% SEZIONI EUROPASS - Formato Istituzionale
+% ==========================================
+
+% Titoli sezione con linea (standard UE)
+\titleformat{\section}[block]
+  {\large\bfseries\MakeUppercase}
+  {}
+  {0pt}
+  {}
+  [\vspace{-0.3em}{\color{blue!80!black}\rule{\textwidth}{0.8pt}}\vspace{0.8em}]
+
+% ==========================================
+% ESPERIENZA LAVORATIVA - Formato Tabellare Europass
+% ==========================================
+\renewcommand{\experience}[4]{%
+  \noindent
+  \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
+    \textbf{Date} & #1 \\[3pt]
+    \textbf{Datore di lavoro} & #2 \\[3pt]
+    \textbf{Tipo di impiego} & #3 \\[3pt]
+    \textbf{Principali mansioni} & 
+    \begin{minipage}[t]{12.5cm}
+      \vspace{-0.5\baselineskip}
+      \begin{itemize}[leftmargin=*, topsep=0pt, itemsep=1pt, parsep=0pt]
+        #4
+      \end{itemize}
+    \end{minipage} \\
+  \end{tabular}
+  \vspace{1.2em}
+}
+
+% ==========================================
+% ISTRUZIONE E FORMAZIONE - Formato Europass
+% ==========================================
+\renewcommand{\education}[4]{%
+  \noindent
+  \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
+    \textbf{Date} & #1 \\[3pt]
+    \textbf{Istituto} & #2 \\[3pt]
+    \textbf{Qualifica conseguita} & #3 \\[3pt]
+    \ifx\relax#4\relax\else
+    \textbf{Competenze acquisite} & 
+    \begin{minipage}[t]{12.5cm}
+      \vspace{-0.5\baselineskip}
+      {\small #4}
+    \end{minipage} \\
+    \fi
+  \end{tabular}
+  \vspace{1.2em}
+}
+
+% ==========================================
+% ATTIVITÀ ARTISTICA - Adattamento Europass
+% ==========================================
+% Europass non ha sezione standard per "concerti", ma possiamo adattare
+\newcommand{\artisticevent}[7]{%
+  \noindent
+  \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
+    \textbf{Data} & #1 \\[3pt]
+    \textbf{Venue} & #2 \\[3pt]
+    \textbf{Organizzatore} & #3 \\[3pt]
+    \textbf{Progetto/Opera} & #4 \\[3pt]
+    \textbf{Ruolo} & #6 \\[3pt]
+    \textbf{Strumentazione} & #5 \\[3pt]
+    \ifx\relax#7\relax\else
+    \textbf{Note} & 
+    \begin{minipage}[t]{12.5cm}
+      \vspace{-0.5\baselineskip}
+      {\small #7}
+    \end{minipage} \\
+    \fi
+  \end{tabular}
+  \vspace{1.2em}
+}
+
+% ==========================================
+% COMPETENZE PERSONALI - Sezione Europass
+% ==========================================
+\renewcommand{\skills}[1]{%
+  % Formato Europass: descrizione competenze in paragrafo
+  \subsection*{Competenze digitali}
+  \begin{itemize}[leftmargin=*, topsep=3pt, itemsep=2pt, parsep=0pt]
+    #1
+  \end{itemize}
+  \vspace{0.5em}
+}
+
+% ==========================================
+% LINGUE - Formato Europass Standard
+% ==========================================
+% Comando per lingue in formato tabellare Europass
+\newcommand{\languageitem}[2]{%
+  #1 & #2 \\[2pt]
+}
+
+% Ridefinizione sezione lingue per layout Europass
+\newcommand{\languagessection}[1]{%
+  \subsection*{Lingue}
+  \noindent
+  \begin{tabular}{@{}ll@{}}
+    #1
+  \end{tabular}
+  \vspace{0.8em}
+}
+
+% ==========================================
+% INSEGNAMENTO - Formato Europass Adattato
+% ==========================================
+% Nel Europass va sotto "Esperienza Lavorativa" ma con formato specifico
+\newcommand{\teachingexperience}[4]{%
+  \noindent
+  \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
+    \textbf{Date} & #1 \\[3pt]
+    \textbf{Istituto} & #2 \\[3pt]
+    \textbf{Tipo di attività} & #3 \\[3pt]
+    \textbf{Dettagli} & 
+    \begin{minipage}[t]{12.5cm}
+      \vspace{-0.5\baselineskip}
+      \begin{itemize}[leftmargin=*, topsep=0pt, itemsep=1pt, parsep=0pt]
+        #4
+      \end{itemize}
+    \end{minipage} \\
+  \end{tabular}
+  \vspace{1.2em}
+}
+
+% ==========================================
+% SEZIONE PROGETTI - Europass Adapted
+% ==========================================
+\newcommand{\projectexperience}[4]{%
+  \noindent
+  \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
+    \textbf{Periodo} & #1 \\[3pt]
+    \textbf{Progetto} & #3 \\[3pt]
+    \textbf{Organizzazione} & #2 \\[3pt]
+    \textbf{Attività} & 
+    \begin{minipage}[t]{12.5cm}
+      \vspace{-0.5\baselineskip}
+      \begin{itemize}[leftmargin=*, topsep=0pt, itemsep=1pt, parsep=0pt]
+        #4
+      \end{itemize}
+    \end{minipage} \\
+  \end{tabular}
+  \vspace{1.2em}
+}
+
+% ==========================================
+% SUMMARY EUROPASS
+% ==========================================
+\renewcommand{\summary}[1]{
+  \section*{Profilo Professionale}
+  \noindent #1
+  \vspace{1em}
+}

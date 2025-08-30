@@ -1,0 +1,74 @@
+% ==========================================
+% cv_geometry_standard.sty - Layout formale/istituzionale
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_geometry_standard}[2025/08/21 Standard formal geometry]
+
+\RequirePackage{cv_geometry_base}
+
+% === MARGINI EUROPASS/ISTITUZIONALI ===
+% Margini standardizzati secondo linee guida UE
+\geometry{
+  a4paper,
+  top=20mm,
+  bottom=20mm,
+  left=20mm,
+  right=20mm,
+  headheight=0pt,
+  headsep=0pt,
+  footskip=15mm
+}
+
+% === SPAZIATURA SEZIONI STANDARD ===
+\titlespacing*{\section}{0pt}{15pt plus 4pt minus 2pt}{8pt plus 2pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{10pt plus 3pt minus 2pt}{4pt plus 1pt minus 1pt}
+
+% === LISTE FORMALI ===
+% Itemize standardizzato per contesti istituzionali
+\setlist[itemize,1]{
+  leftmargin=15mm,        % Rientro fisso standard
+  itemsep=2pt,           % Spaziatura tra item minimal
+  topsep=3pt,            % Spazio prima/dopo lista
+  parsep=0pt,            % No spazio extra paragrafi
+  label={\textbullet}    % Bullet standard (no simboli creativi)
+}
+
+% === TABELLE EUROPASS ===
+% Layout tabellare per sezioni Europass (Date | Contenuto)
+\newcolumntype{D}{p{3.5cm}}  % Colonna Date fissa
+\newcolumntype{C}{p{11cm}}   % Colonna Contenuto
+\newcolumntype{F}{p{\textwidth-4cm}} % Colonna Full-width con margine
+
+% Ambiente per sezioni tabellari Europass
+\newenvironment{europasstable}{%
+  \begin{tabular}{@{}DC@{}}
+}{%
+  \end{tabular}
+  \vspace{0.5em}
+}
+
+% === HEADER STANDARDIZZATO ===
+% Layout header centrato (nome + info in tabella)
+\newcommand{\standardheader}[5]{%  nome, ruolo, città, telefono, email
+  \begin{center}
+    {\fontsize{18}{22}\selectfont\bfseries\MakeUppercase{#1}}\\[0.5em]
+    {\large #2}
+  \end{center}
+  \vspace{1em}
+  
+  \noindent
+  \begin{tabular}{@{}ll}
+    \textbf{Residenza} & #3 \\
+    \textbf{Telefono} & #4 \\
+    \textbf{E-mail} & #5 \\
+  \end{tabular}
+  \vspace{1.5em}
+}
+
+% === SEZIONI EUROPASS ===
+\titleformat{\section}[block]
+  {\large\bfseries\MakeUppercase}  % Formato: maiuscolo, grassetto
+  {}                               % No numerazione
+  {0pt}                           % No spazio prima titolo
+  {}                              % No codice aggiuntivo
+  [\vspace{-0.3em}\hrule height 0.5pt\vspace{0.5em}]  % Linea sotto

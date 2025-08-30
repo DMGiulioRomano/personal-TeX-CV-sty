@@ -1,43 +1,174 @@
 %!TEX root = CV_GIULIO_DE_MATTIA.tex
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{style_academic}[2025/08/21 Academic CV style]
+\ProvidesPackage{style_academic}[2025/08/21 Academic CV style - Refactored]
 
-\usepackage{styles/CV_temp_common}
+% ==========================================
+% IMPORT MODULI BASE
+% ==========================================
+\RequirePackage{cv_fonts_academic}      % Font serif + math support
+\RequirePackage{cv_geometry_academic}   % Nuovo modulo geometry accademico
+\RequirePackage{cv_base}                % Comandi dati base
 
-% --- Esperienze lavorative standard ---
-\newcommand{\experience}[4]{%
-  \noindent\textbf{#3} \hfill {\small #1}\\
-  \hspace*{1em}\emph{#2}\\[-2pt]
-  \vspace{-\baselineskip}
-  \begin{itemize}[leftmargin=.7cm, topsep=2pt, itemsep=0pt, parsep=0pt, label={\textbullet}] #4 \end{itemize}
-  \vspace{1em}
+% ==========================================
+% CONFIGURAZIONE ACCADEMICA SPECIFICA
+% ==========================================
+
+% === HEADER ACCADEMICO ===
+% Ibrido: nome prominente + info compatte (no foto grande, no tabella rigida)
+\renewcommand{\makeheader}{
+  \begin{center}
+    {\fontsize{22}{26}\selectfont\bfseries\@name}\\[0.3em]
+    {\Large\itshape\@role}
+  \end{center}
+  \vspace{0.5em}
+  
+  \noindent
+  \begin{center}
+    \@city \quad|\quad \@phone \quad|\quad \@mail \\
+    \ifx\@link\undefined\else\@link\fi
+  \end{center}
+  \vspace{1.2em}
 }
 
-% --- Eventi artistici (concerti, performance, ecc.) ---
-\newcommand{\artisticevent}[7]{%
-  \noindent\textbf{#4} \hfill {\small #1}\\
-  \hspace*{1em}\emph{#2} -- #3\\[-2pt]
-  \hspace*{2em}\textbf{Ruolo:} #6\\
-  \hspace*{2em}\textbf{Organico:} #5\\
-  \hspace*{2em}\textbf{Programma:} #7
-  \hspace*{2em}\vspace{0.5em}
+% === SEZIONI ACCADEMICHE ===
+% Stile intermedio: più formale del creativo, meno rigido dell'istituzionale
+\titleformat{\section}[block]
+  {\Large\bfseries}
+  {}
+  {0pt}
+  {}
+  [\vspace{-0.2em}{\color{gray}\rule{\textwidth}{0.3pt}}\vspace{0.4em}]
+
+\titleformat{\subsection}[block]
+  {\large\bfseries}
+  {}
+  {0pt}
+  {}
+
+% ==========================================
+% COMANDI SPECIFICI ACCADEMICI
+% ==========================================
+
+% === POSIZIONI ACCADEMICHE ===
+\newcommand{\academicposition}[5]{%
+  \noindent\textbf{#3} \hfill {\footnotesize #1}\\
+  \textit{#2}\\[-2pt]
+  \ifx\relax#4\relax\else
+    \textbf{Supervisore:} #4\\[-2pt]
+  \fi
+  \ifx\relax#5\relax\else
+    \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt] 
+      #5 
+    \end{itemize}
+  \fi
+  \vspace{0.8em}
 }
 
-% --- Formato istruzione ---
-\newcommand{\education}[4]{%
-  \noindent\textbf{#3} \hfill {\small #1}\\
-  \emph{#2}\\[-1pt]
-  #4\par\vspace{0.3em}
+% === FORMAZIONE ACCADEMICA DETTAGLIATA ===
+\renewcommand{\education}[4]{%
+  \noindent\textbf{#3} \hfill {\footnotesize #1}\\
+  \textit{#2}\\[-1pt]
+  \ifx\relax#4\relax\else
+    {\small #4}\\
+  \fi
+  \vspace{0.5em}
 }
 
-% --- Lingue come itemize ---
-\newcommand{\languageitem}[2]{%
-  \item \textbf{#1}: {\small #2}%
+% === PUBBLICAZIONI ACCADEMICHE ===
+\newcommand{\publication}[6]{%
+  % #1=anno, #2=autori, #3=titolo, #4=venue, #5=tipo, #6=note
+  \noindent\textbf{#2} (#1). ``#3''. \textit{#4}. #5.
+  \ifx\relax#6\relax\else
+    \\{\footnotesize #6}
+  \fi
+  \par\vspace{0.3em}
 }
 
-
-% --- Sezioni per raggruppare ---
-\newcommand{\cvsection}[2]{
-  \section*{#1}
-  #2
+% === CONFERENZE E PRESENTAZIONI ===
+\newcommand{\conference}[5]{%
+  % #1=data, #2=titolo, #3=conferenza, #4=luogo, #5=tipo
+  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
+  \textit{#3}, #4\\[-2pt]
+  {\small #5}
+  \vspace{0.5em}
 }
+
+% === EVENTI ARTISTICI ACCADEMICI ===
+% Versione accademica: enfasi su aspetti di ricerca
+\renewcommand{\artisticevent}[7]{%
+  \noindent\textbf{#4} \hfill {\footnotesize #1}\\
+  \textit{#2} -- #3\\[-2pt]
+  \begin{description}[leftmargin=2em, labelwidth=1.5em, itemsep=1pt]
+    \item[Ruolo:] #6
+    \item[Organico:] #5
+    \ifx\relax#7\relax\else
+    \item[Ricerca:] #7
+    \fi
+  \end{description}
+  \vspace{0.8em}
+}
+
+% === PROGETTI DI RICERCA ===
+\newcommand{\researchproject}[5]{%
+  % #1=periodo, #2=titolo, #3=istituzione, #4=ruolo, #5=descrizione
+  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
+  \textit{#3} -- #4\\[-2pt]
+  \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt]
+    #5
+  \end{itemize}
+  \vspace{0.8em}
+}
+
+% === COMPETENZE TECNICHE ACCADEMICHE ===
+\renewcommand{\skills}[1]{%
+  \begin{itemize}[leftmargin=1.2em, itemsep=1pt, topsep=3pt, parsep=0pt]
+    #1
+  \end{itemize}
+}
+
+% Skill specifiche per ricerca
+\newcommand{\researchskill}[1]{\item \textbf{Ricerca:} #1}
+\newcommand{\techskill}[1]{\item \textbf{Tecnologie:} #1}
+\newcommand{\analysisskill}[1]{\item \textbf{Analisi:} #1}
+
+% === INSEGNAMENTO ACCADEMICO ===
+\newcommand{\teaching}[6]{%
+  % #1=periodo, #2=corso, #3=istituzione, #4=ruolo, #5=studenti, #6=dettagli
+  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
+  \textit{#3} -- #4\\[-2pt]
+  {\small Studenti: #5}\\[-2pt]
+  \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt]
+    #6
+  \end{itemize}
+  \vspace{0.8em}
+}
+
+% === BORSE E RICONOSCIMENTI ===
+\newcommand{\award}[4]{%
+  % #1=anno, #2=nome, #3=istituzione, #4=descrizione
+  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
+  \textit{#3}\\[-2pt]
+  {\small #4}
+  \vspace{0.5em}
+}
+
+% ==========================================
+% NOTE SULL'UTILIZZO
+% ==========================================
+
+% Questo stile definisce COMANDI per formattare contenuti accademici.
+% Il contenuto viene generato da generate_cv.py in cv_data.tex
+% 
+% Esempi d'uso dei comandi definiti sopra:
+%
+% \publication{2023}{De Mattia, G.R.}{Feedback Systems in Live Electronics}
+%   {Proceedings of ICMC}{Conference paper}{DOI: 10.1234/example}
+%
+% \conference{13/07/2024}{Post-Prae-Ludium per Donau}
+%   {ElettroAQustica 2024}{L'Aquila}{Presentazione live electronics}
+%
+% \researchproject{2023--oggi}{Spazializzazione Ambisonica}
+%   {CRM Roma}{Research Assistant}{
+%   \item Sviluppo algoritmi spazializzazione real-time
+%   \item Implementazione in Max/MSP e Pure Data
+% }

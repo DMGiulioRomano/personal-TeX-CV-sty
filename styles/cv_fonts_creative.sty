@@ -1,0 +1,26 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+
+% ==========================================
+% cv_fonts_creative.sty - Font creativi/artistici
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_fonts_creative}[2025/08/21 Creative fonts for artistic CVs]
+
+\RequirePackage{cv_fonts_base}
+
+% Font principale: Alegreya (elegante, leggibile, artistico)
+\usepackage{Alegreya}
+
+% Font supplementari
+\setmainfonts{Alegreya}{Source Sans Pro}{Fira Code}
+
+% Icone creative
+\usepackage{fontawesome5}
+
+% Ridefinizioni per stile creativo
+\renewcommand{\namefont}[1]{{\fontsize{28}{32}\selectfont\bfseries #1}}
+\renewcommand{\rolefont}[1]{{\Large\itshape #1}}
+\renewcommand{\sectionfont}[1]{{\Large\bfseries\color{blue!70!black} #1}}
+
+% Comando per evidenziare competenze tecniche
+\newcommand{\techskill}[1]{\texttt{\small #1}}

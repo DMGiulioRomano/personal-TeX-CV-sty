@@ -1,0 +1,23 @@
+% ==========================================
+% cv_fonts_tech.sty - Font per CV tecnologici
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_fonts_tech}[2025/08/21 Tech fonts for developer CVs]
+
+\RequirePackage{cv_fonts_base}
+
+% Font moderni e tech-friendly
+\setmainfonts{Inter}{Inter}{JetBrains Mono}
+% Fallback: \setmainfonts{Source Sans Pro}{Source Sans Pro}{Fira Code}
+
+\usepackage{fontawesome5}
+
+% Ridefinizioni per stile tech
+\renewcommand{\namefont}[1]{{\fontsize{24}{28}\selectfont\bfseries #1}}
+\renewcommand{\rolefont}[1]{{\Large\sffamily #1}}
+\renewcommand{\sectionfont}[1]{{\Large\sffamily\bfseries #1}}
+
+% Comandi specializzati per tech
+\newcommand{\codeskill}[1]{\texttt{\footnotesize #1}}
+\newcommand{\framework}[1]{\textsf{\small #1}}
+\newcommand{\versioncontrol}[1]{\texttt{\scriptsize #1}}

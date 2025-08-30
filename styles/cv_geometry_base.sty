@@ -1,0 +1,31 @@
+
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+
+% ==========================================
+% cv_geometry_base.sty - Configurazioni comuni
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_geometry_base}[2025/08/21 Base geometry settings]
+
+% Pacchetti essenziali per il layout
+\usepackage{geometry}
+\usepackage{enumitem}    % Controllo liste
+\usepackage{titlesec}    % Controllo sezioni
+\usepackage{graphicx}    % Immagini
+\usepackage{tabularx}    % Tabelle flessibili
+\usepackage{array}       % Colonne tabelle personalizzate
+\usepackage{calc}        % Calcoli dimensioni
+
+% Comando per configurare margini personalizzati
+\newcommand{\setcvmargins}[4]{%
+  \geometry{
+    top=#1,
+    bottom=#2, 
+    left=#3,
+    right=#4
+  }
+}
+
+% Controllo spaziatura paragrafi
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3em}

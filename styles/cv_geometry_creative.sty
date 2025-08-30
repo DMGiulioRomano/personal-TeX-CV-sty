@@ -1,0 +1,96 @@
+% ==========================================
+% cv_geometry_creative.sty - Layout artistico/creativo
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_geometry_creative}[2025/08/21 Creative artistic geometry]
+
+\RequirePackage{cv_geometry_base}
+
+% === MARGINI CREATIVI ===
+% Più spazio per elementi grafici e layout asimmetrici
+\geometry{
+  a4paper,
+  top=20mm,
+  bottom=25mm,
+  textwidth=17.2cm,      % Larghezza text custom (come nel tuo attuale)
+  columnsep=0.8cm,       % Spazio tra colonne per layout multicolonna
+  headheight=0pt,
+  headsep=0pt,
+  footskip=20mm
+}
+
+% === SPAZIATURA CREATIVA ===
+% Più respiro tra sezioni per look artistico
+\titlespacing*{\section}{0pt}{20pt plus 6pt minus 3pt}{12pt plus 4pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{6pt plus 2pt minus 1pt}
+
+% === LISTE CREATIVE ===
+\setlist[itemize,1]{
+  leftmargin=*,          % Rientro automatico (più flessibile)
+  itemsep=1pt,          
+  topsep=2pt,           
+  parsep=2pt,           
+  label={\color{blue!70!black}\textbullet}  % Bullet colorati
+}
+
+% Lista per competenze tecniche (più compatta)
+\newlist{techlist}{itemize}{1}
+\setlist[techlist]{
+  leftmargin=0.7cm,
+  itemsep=0pt,
+  topsep=0pt,
+  parsep=2pt,
+  label={\small\textbullet}
+}
+
+% === LAYOUT HEADER CREATIVO ===
+% Header a due colonne: foto + info (come il tuo attuale)
+\newcommand{\creativeheader}[6]{%  nome, ruolo, città, tel, email, foto
+  \noindent
+  \begin{minipage}[c]{0.35\textwidth}
+    \ifx\relax#6\relax
+    \else
+      \includegraphics[width=\linewidth]{#6}
+    \fi
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[c]{0.6\textwidth}
+    {\Huge\bfseries #1}\\[1cm]
+    {\Large #2}\\[6pt]
+    #3 \\ #4 \\ #5
+  \end{minipage}
+  \vspace{1em}
+}
+
+% === SEZIONI CREATIVE ===
+\titleformat{\section}[block]
+  {\Large\bfseries\color{blue!70!black}}
+  {}
+  {0pt}
+  {}
+  [\vspace{0.2em}]  % Solo piccolo spazio, no linea
+
+% === LAYOUT MULTICOLONNA ===
+\usepackage{multicol}
+\usepackage{paracol}    % Per colonne asimmetriche avanzate
+
+% Ambiente per sezioni a due colonne (es. competenze + lingue)
+\newenvironment{twocolsection}[2][0.48]{%
+  \begin{minipage}{#1\textwidth}
+  #2
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{\textwidth-#1\textwidth-1em}
+}{%
+  \end{minipage}
+}
+
+% === ELEMENTI GRAFICI ===
+\usepackage{xcolor}
+\usepackage{tikz}       % Per elementi grafici personalizzati
+\usetikzlibrary{shapes,arrows,positioning}
+
+% Comando per sezione con accent colorato
+\newcommand{\accentsection}[2][blue!70!black]{%
+  \section*{\textcolor{#1}{#2}}
+}

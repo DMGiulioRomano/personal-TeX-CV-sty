@@ -1,0 +1,32 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+% ==========================================
+% cv_fonts_institutional.sty - Font istituzionali/Europass
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_fonts_institutional}[2025/08/21 Institutional fonts for formal CVs]
+
+\RequirePackage{cv_fonts_base}
+
+% Font istituzionali (conformi standard UE/accademici)
+% Priorità: Arial > Liberation Sans > Source Sans Pro (fallback)
+\IfFontExistsTF{Arial}{
+  \setmainfonts{Arial}{Arial}{Courier New}
+}{
+  \IfFontExistsTF{Liberation Sans}{
+    \setmainfonts{Liberation Serif}{Liberation Sans}{Liberation Mono}
+  }{
+    % Fallback per sistemi senza font Microsoft/Liberation
+    \setmainfonts{TeX Gyre Termes}{TeX Gyre Heros}{TeX Gyre Cursor}
+  }
+}
+
+% NO icone decorative in contesti istituzionali
+% \usepackage{fontawesome5} % COMMENTATO
+
+% Ridefinizioni per stile istituzionale
+\renewcommand{\namefont}[1]{{\fontsize{18}{22}\selectfont\bfseries\MakeUppercase{#1}}}
+\renewcommand{\rolefont}[1]{{\large #1}}
+\renewcommand{\sectionfont}[1]{{\large\bfseries\MakeUppercase{#1}}}
+
+% Formato date standardizzato
+\newcommand{\europassdate}[1]{\textbf{#1}}

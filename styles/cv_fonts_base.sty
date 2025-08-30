@@ -1,0 +1,28 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+
+% ==========================================
+% cv_fonts_base.sty - Configurazione XeLaTeX base
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_fonts_base}[2025/08/21 Base font configuration for XeLaTeX]
+
+% Pacchetti base per XeLaTeX (COMUNI a tutti gli stili)
+\usepackage{fontspec}
+\usepackage{xltxtra}
+\usepackage{xunicode}
+
+% Configurazione base encoding (per compatibilità)
+\usepackage[T1]{fontenc}
+
+% Comandi per definire font personalizzati
+\newcommand{\setmainfonts}[3]{%
+  \setmainfont{#1}%
+  \setsansfont{#2}%
+  \setmonofont{#3}%
+}
+
+% Comandi per gerarchie tipografiche
+\newcommand{\namefont}[1]{{\fontsize{24}{28}\selectfont\bfseries #1}}
+\newcommand{\rolefont}[1]{{\Large #1}}
+\newcommand{\sectionfont}[1]{{\Large\bfseries #1}}
+\newcommand{\subsectionfont}[1]{{\bfseries #1}}

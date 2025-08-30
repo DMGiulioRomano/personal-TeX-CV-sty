@@ -1,0 +1,27 @@
+% ==========================================
+% cv_fonts_academic.sty - Font accademici
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_fonts_academic}[2025/08/21 Academic fonts for scholarly CVs]
+
+\RequirePackage{cv_fonts_base}
+
+% Font accademici: serif eleganti per leggibilità in stampa
+\setmainfonts{TeX Gyre Termes}{TeX Gyre Heros}{TeX Gyre Cursor}
+% Alternativa con Minion Pro: \setmainfonts{Minion Pro}{Myriad Pro}{Source Code Pro}
+
+% Icone minimal
+\usepackage{fontawesome5}
+
+% Math support per eventuali formule in pubblicazioni
+\usepackage{amsmath,amsfonts,amssymb}
+
+% Ridefinizioni per stile accademico
+\renewcommand{\namefont}[1]{{\fontsize{20}{24}\selectfont\bfseries #1}}
+\renewcommand{\rolefont}[1]{{\Large\itshape #1}}
+\renewcommand{\sectionfont}[1]{{\Large\bfseries #1}}
+
+% Comandi per citazioni e pubblicazioni
+\newcommand{\pubtitle}[1]{\textit{#1}}
+\newcommand{\journal}[1]{\textbf{#1}}
+\newcommand{\confname}[1]{\textsc{#1}}

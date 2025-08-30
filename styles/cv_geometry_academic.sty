@@ -1,0 +1,113 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+
+% ==========================================
+% cv_geometry_academic.sty - Layout accademico
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_geometry_academic}[2025/08/21 Academic geometry layout]
+
+\RequirePackage{cv_geometry_base}
+
+% === MARGINI ACCADEMICI ===
+% Bilanciamento tra formale e leggibile per contenuti lunghi
+\geometry{
+  a4paper,
+  top=25mm,        % Più spazio sopra per header elegante
+  bottom=25mm,     
+  left=25mm,       % Margini generosi per stampa accademica
+  right=25mm,
+  headheight=0pt,
+  headsep=0pt,
+  footskip=20mm
+}
+
+% === SPAZIATURA ACCADEMICA ===
+% Ottimizzata per leggibilità di contenuti densi (pubblicazioni, etc.)
+\titlespacing*{\section}{0pt}{18pt plus 5pt minus 2pt}{10pt plus 3pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{12pt plus 3pt minus 1pt}{6pt plus 2pt minus 1pt}
+
+% Spazio tra paragrafi per contenuti accademici
+\setlength{\parskip}{0.4em}
+
+% === LISTE ACCADEMICHE ===
+% Liste ottimizzate per pubblicazioni e descrizioni tecniche
+\setlist[itemize,1]{
+  leftmargin=1.5em,      # Rientro moderato
+  itemsep=1pt,           # Spazio minimal tra item
+  topsep=3pt,            # Spazio prima/dopo lista
+  parsep=1pt,            # Piccolo spazio tra paragrafi
+  label={\textbullet}    # Bullet classici
+}
+
+% Lista speciale per pubblicazioni (più compatta)
+\newlist{publist}{itemize}{1}
+\setlist[publist]{
+  leftmargin=0pt,
+  itemsep=2pt,
+  topsep=3pt,
+  parsep=0pt,
+  label={}             # No bullet per pubblicazioni
+}
+
+% Lista per descrizioni dettagliate (ricerca, progetti)
+\newlist{detaillist}{description}{1}  
+\setlist[detaillist]{
+  leftmargin=2em,
+  labelwidth=1.5em,
+  itemsep=1pt,
+  topsep=2pt,
+  font=\normalfont\bfseries
+}
+
+% === SUPPORTO BIBLIOGRAFICO ===
+\usepackage{natbib}      % Citazioni accademiche
+\usepackage{url}         # URL in bibliografia
+\usepackage{doi}         # DOI links
+
+% === TABELLE ACCADEMICHE ===
+% Per CV con molte pubblicazioni/conferenze
+\usepackage{longtable}   # Tabelle multi-pagina
+\usepackage{booktabs}    # Tabelle eleganti
+
+% Colonne specializzate per contenuti accademici
+\newcolumntype{Y}{p{2cm}}   # Anno
+\newcolumntype{A}{p{3cm}}   # Autori  
+\newcolumntype{T}{p{6cm}}   # Titolo
+\newcolumntype{V}{p{4cm}}   # Venue
+
+% === ELEMENTI GRAFICI DISCRETI ===
+% Linee sottili per separazione sezioni (stile accademico sobrio)
+\usepackage{xcolor}
+\definecolor{academicgray}{gray}{0.6}
+
+% Comando per linea di sezione accademica
+\newcommand{\academicline}{%
+  {\color{academicgray}\rule{\textwidth}{0.3pt}}
+}
+
+% === SUPPORTO MULTILINGUE ===
+% Per citazioni e titoli internazionali
+\usepackage{polyglossia}
+\setdefaultlanguage{italian}
+\setotherlanguages{english,german,french}
+
+% === NUMERAZIONE PERSONALIZZATA ===
+% Per lista pubblicazioni numerate
+\usepackage{etaremune}   # Enumerate reverse (pubblicazioni recenti prima)
+
+% === SPAZI PERSONALIZZATI ===
+% Controllo fine della spaziatura per contenuti densi
+
+% Riduce spazio dopo titoli per massimizzare contenuto
+\newcommand{\tightspacing}{
+  \titlespacing*{\section}{0pt}{12pt}{6pt}
+  \titlespacing*{\subsection}{0pt}{8pt}{4pt}
+  \setlength{\parskip}{0.2em}
+}
+
+% Aumenta spazio per versione "presentation" 
+\newcommand{\loosespacing}{
+  \titlespacing*{\section}{0pt}{24pt}{12pt}
+  \titlespacing*{\subsection}{0pt}{16pt}{8pt}  
+  \setlength{\parskip}{0.6em}
+}
