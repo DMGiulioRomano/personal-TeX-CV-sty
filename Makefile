@@ -33,14 +33,18 @@ latex:
 	@xelatex -interaction=nonstopmode $(MAIN_TEX)
 	@echo "$(GREEN)✅ PDF generato: $(OUTPUT_PDF)$(NC)"
 
-# Compila tutto (Python + LaTeX)
-european:
+artistic:    # ← Il tuo stile attuale
+	@$(MAKE) generate STYLE=artistic
+	@$(MAKE) latex
+
+european:    # ← VERO Europass standard UE  
 	@$(MAKE) generate STYLE=european
 	@$(MAKE) latex
 
-academic:
-	@$(MAKE) generate STYLE=academic  
+academic:    # ← Stile per pubblicazioni/ricerca
+	@$(MAKE) generate STYLE=academic
 	@$(MAKE) latex
+
 
 # Pulizia completa
 clean:
