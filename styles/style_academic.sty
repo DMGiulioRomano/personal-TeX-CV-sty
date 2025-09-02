@@ -1,21 +1,34 @@
 %!TEX root = CV_GIULIO_DE_MATTIA.tex
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{style_academic}[2025/08/21 Academic CV style - Refactored]
+\ProvidesPackage{style_academic_fixed}[2025/08/21 Academic CV style - FIXED VERSION]
 
 % ==========================================
-% IMPORT MODULI BASE
+% IMPORT SISTEMA CORRETTO
 % ==========================================
-\RequirePackage{styles/cv_fonts_academic}      % Font serif + math support
-\RequirePackage{styles/cv_geometry_academic}   % Nuovo modulo geometry accademico
-\RequirePackage{styles/cv_base}                % Comandi dati base
+\RequirePackage{styles/cv_commands_base}        % CONTRATTO BASE (definisce tutti i comandi)
+\RequirePackage{styles/cv_geometry_academic}    % Layout accademico  
+\RequirePackage{fontspec}                       % Font management
 
 % ==========================================
-% CONFIGURAZIONE ACCADEMICA SPECIFICA
+% FONT SYSTEM CON FALLBACK ROBUSTO
 % ==========================================
 
-% === HEADER ACCADEMICO ===
-% Ibrido: nome prominente + info compatte (no foto grande, no tabella rigida)
+% Usa il sistema di fallback definito in cv_commands_base
+\setfontswithfallback
+  {TeX Gyre Termes}{Times New Roman}      % Serif: primario, fallback
+  {TeX Gyre Heros}{Arial}                 % Sans: primario, fallback  
+  {TeX Gyre Cursor}{Courier New}          % Mono: primario, fallback
+
+% Math support per formule in pubblicazioni
+\RequirePackage{amsmath,amsfonts,amssymb}
+
+% ==========================================
+% HEADER ACCADEMICO - Ridefinizione corretta
+% ==========================================
 \renewcommand{\makeheader}{
+  \cvlog{Generating academic header}
+  \validatedata  % Controlla che tutti i dati necessari siano definiti
+  
   \begin{center}
     {\fontsize{22}{26}\selectfont\bfseries\@name}\\[0.3em]
     {\Large\itshape\@role}
@@ -30,8 +43,12 @@
   \vspace{1.2em}
 }
 
-% === SEZIONI ACCADEMICHE ===
-% Stile intermedio: più formale del creativo, meno rigido dell'istituzionale
+% ==========================================
+% SEZIONI ACCADEMICHE - Ridefinizioni corrette
+% ==========================================
+
+% Formattazione sezioni
+\RequirePackage{titlesec}
 \titleformat{\section}[block]
   {\Large\bfseries}
   {}
@@ -39,18 +56,65 @@
   {}
   [\vspace{-0.2em}{\color{gray}\rule{\textwidth}{0.3pt}}\vspace{0.4em}]
 
-\titleformat{\subsection}[block]
-  {\large\bfseries}
-  {}
-  {0pt}
-  {}
-
 % ==========================================
-% COMANDI SPECIFICI ACCADEMICI
+% RIDEFINIZIONE COMANDI ESISTENTI (non creazione ex novo)
 % ==========================================
 
-% === POSIZIONI ACCADEMICHE ===
-\newcommand{\academicposition}[5]{%
+% Esperienza accademica dettagliata
+\renewcommand{\experience}[4]{%
+  \cvlog{Formatting academic experience}
+  \noindent\textbf{#3} \hfill {\footnotesize #1}\\
+  \textit{#2}\\[-2pt]
+  \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt] 
+    #4 
+  \end{itemize}
+  \vspace{0.8em}
+}
+
+% Formazione accademica con supervisore
+\newcommand{\education}[4]{%
+  \cvlog{Formatting academic education}
+  \noindent\textbf{#3} \hfill {\footnotesize #1}\\
+  \textit{#2}\\[-1pt]
+  \ifx\relax#4\relax\else
+    {\small #4}\\
+  \fi
+  \vspace{0.5em}
+}
+
+% Eventi artistici con focus ricerca
+\renewcommand{\artisticevent}[7]{%
+  \cvlog{Formatting academic artistic event}
+  \noindent\textbf{#4} \hfill {\footnotesize #1}\\
+  \textit{#2} -- #3\\[-2pt]
+  
+  % Usa description invece di itemize per layout più strutturato
+  \begin{description}[leftmargin=2em, labelwidth=1.5em, itemsep=1pt]
+    \item[Ruolo:] #6
+    \item[Organico:] #5
+    \ifx\relax#7\relax\else
+    \item[Note:] #7
+    \fi
+  \end{description}
+  \vspace{0.8em}
+}
+
+% Skills accademiche con categorizzazione
+\renewcommand{\skills}[1]{%
+  \cvlog{Formatting academic skills}
+  \section*{Competenze di Ricerca}
+  \begin{itemize}[leftmargin=1.2em, itemsep=1pt, topsep=3pt, parsep=0pt]
+    #1
+  \end{itemize}
+}
+
+% ==========================================
+% COMANDI SPECIALIZZATI ACCADEMICI
+% ==========================================
+
+% Posizione accademica dettagliata (5 parametri)
+\renewcommand{\academicposition}[5]{%
+  \cvlog{Formatting academic position}
   \noindent\textbf{#3} \hfill {\footnotesize #1}\\
   \textit{#2}\\[-2pt]
   \ifx\relax#4\relax\else
@@ -64,18 +128,9 @@
   \vspace{0.8em}
 }
 
-% === FORMAZIONE ACCADEMICA DETTAGLIATA ===
-\renewcommand{\education}[4]{%
-  \noindent\textbf{#3} \hfill {\footnotesize #1}\\
-  \textit{#2}\\[-1pt]
-  \ifx\relax#4\relax\else
-    {\small #4}\\
-  \fi
-  \vspace{0.5em}
-}
-
-% === PUBBLICAZIONI ACCADEMICHE ===
-\newcommand{\publication}[6]{%
+% Pubblicazione scientifica (6 parametri)
+\renewcommand{\publication}[6]{%
+  \cvlog{Formatting publication}
   % #1=anno, #2=autori, #3=titolo, #4=venue, #5=tipo, #6=note
   \noindent\textbf{#2} (#1). ``#3''. \textit{#4}. #5.
   \ifx\relax#6\relax\else
@@ -84,91 +139,23 @@
   \par\vspace{0.3em}
 }
 
-% === CONFERENZE E PRESENTAZIONI ===
-\newcommand{\conference}[5]{%
-  % #1=data, #2=titolo, #3=conferenza, #4=luogo, #5=tipo
-  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
-  \textit{#3}, #4\\[-2pt]
-  {\small #5}
-  \vspace{0.5em}
-}
+% ==========================================
+% VALIDAZIONE SPECIFICA ACADEMIC
+% ==========================================
 
-% === EVENTI ARTISTICI ACCADEMICI ===
-% Versione accademica: enfasi su aspetti di ricerca
-\renewcommand{\artisticevent}[7]{%
-  \noindent\textbf{#4} \hfill {\footnotesize #1}\\
-  \textit{#2} -- #3\\[-2pt]
-  \begin{description}[leftmargin=2em, labelwidth=1.5em, itemsep=1pt]
-    \item[Ruolo:] #6
-    \item[Organico:] #5
-    \ifx\relax#7\relax\else
-    \item[Ricerca:] #7
-    \fi
-  \end{description}
-  \vspace{0.8em}
-}
-
-% === PROGETTI DI RICERCA ===
-\newcommand{\researchproject}[5]{%
-  % #1=periodo, #2=titolo, #3=istituzione, #4=ruolo, #5=descrizione
-  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
-  \textit{#3} -- #4\\[-2pt]
-  \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt]
-    #5
-  \end{itemize}
-  \vspace{0.8em}
-}
-
-% === COMPETENZE TECNICHE ACCADEMICHE ===
-\renewcommand{\skills}[1]{%
-  \begin{itemize}[leftmargin=1.2em, itemsep=1pt, topsep=3pt, parsep=0pt]
-    #1
-  \end{itemize}
-}
-
-% Skill specifiche per ricerca
-\newcommand{\researchskill}[1]{\item \textbf{Ricerca:} #1}
-\newcommand{\techskill}[1]{\item \textbf{Tecnologie:} #1}
-\newcommand{\analysisskill}[1]{\item \textbf{Analisi:} #1}
-
-% === INSEGNAMENTO ACCADEMICO ===
-\newcommand{\teaching}[6]{%
-  % #1=periodo, #2=corso, #3=istituzione, #4=ruolo, #5=studenti, #6=dettagli
-  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
-  \textit{#3} -- #4\\[-2pt]
-  {\small Studenti: #5}\\[-2pt]
-  \begin{itemize}[leftmargin=1.5em, topsep=2pt, itemsep=0pt]
-    #6
-  \end{itemize}
-  \vspace{0.8em}
-}
-
-% === BORSE E RICONOSCIMENTI ===
-\newcommand{\award}[4]{%
-  % #1=anno, #2=nome, #3=istituzione, #4=descrizione
-  \noindent\textbf{#2} \hfill {\footnotesize #1}\\
-  \textit{#3}\\[-2pt]
-  {\small #4}
-  \vspace{0.5em}
+% Override della validazione base per includere controlli academic-specific
+\renewcommand{\validatedata}{
+  \@ifundefined{@name}{\PackageError{style_academic}{Name not defined. Use \\name{...}}{}}{}
+  \@ifundefined{@role}{\PackageError{style_academic}{Role not defined. Use \\role{...}}{}}{}
+  \@ifundefined{@city}{\PackageError{style_academic}{Contacts not defined. Use \\contacts{...}}{}}{}
+  
+  % Log successful validation
+  \cvlog{Academic style validation passed}
 }
 
 % ==========================================
-% NOTE SULL'UTILIZZO
+% FINE DEL PACKAGE
 % ==========================================
 
-% Questo stile definisce COMANDI per formattare contenuti accademici.
-% Il contenuto viene generato da generate_cv.py in cv_data.tex
-% 
-% Esempi d'uso dei comandi definiti sopra:
-%
-% \publication{2023}{De Mattia, G.R.}{Feedback Systems in Live Electronics}
-%   {Proceedings of ICMC}{Conference paper}{DOI: 10.1234/example}
-%
-% \conference{13/07/2024}{Post-Prae-Ludium per Donau}
-%   {ElettroAQustica 2024}{L'Aquila}{Presentazione live electronics}
-%
-% \researchproject{2023--oggi}{Spazializzazione Ambisonica}
-%   {CRM Roma}{Research Assistant}{
-%   \item Sviluppo algoritmi spazializzazione real-time
-%   \item Implementazione in Max/MSP e Pure Data
-% }
+% Log caricamento completato
+\cvlog{Academic style loaded successfully}

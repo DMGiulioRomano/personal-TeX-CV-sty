@@ -5,7 +5,7 @@
 % ==========================================
 % IMPORT MODULI SPECIALIZZATI
 % ==========================================
-\RequirePackage{styles/cv_base}                    % Comandi dati base (\name, \role, etc.)
+\RequirePackage{styles/cv_commands_base}                    % Comandi dati base (\name, \role, etc.)
 \RequirePackage{styles/cv_fonts_institutional}     % Font Arial/Liberation, no icone
 \RequirePackage{styles/cv_geometry_standard}       % Margini 20mm, layout tabellare
 
@@ -89,7 +89,7 @@
 % ATTIVITÀ ARTISTICA - Adattamento Europass
 % ==========================================
 % Europass non ha sezione standard per "concerti", ma possiamo adattare
-\newcommand{\artisticevent}[7]{%
+\renewcommand{\artisticevent}[7]{%
   \noindent
   \begin{tabular}{@{}p{3.2cm}p{12.5cm}@{}}
     \textbf{Data} & #1 \\[3pt]

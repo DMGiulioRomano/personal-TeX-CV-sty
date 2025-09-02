@@ -1,0 +1,163 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+
+% ==========================================
+% cv_commands_base.sty - CONTRATTO COMUNE per tutti gli stili
+% ==========================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cv_commands_base}[2025/08/21 Base command interface for all CV styles]
+
+% ==========================================
+% DEFINIZIONI DATI PERSONALI (già esistenti in cv_base)
+% ==========================================
+\newcommand{\name}[1]{\def\@name{#1}}
+\newcommand{\role}[1]{\def\@role{#1}}
+\newcommand{\contacts}[4]{\def\@city{#1}\def\@phone{#2}\def\@mail{#3}\def\@link{#4}}
+\newcommand{\photo}[1]{\def\@photo{#1}}
+
+% Comando header (implementazione di default - da ridefinire negli stili)
+\newcommand{\makeheader}{
+  \begin{center}
+    {\Large\bfseries\@name}\\
+    \@role\\
+    \@city, \@phone, \@mail
+  \end{center}
+  \vspace{1em}
+}
+
+% ==========================================
+% CONTRATTO COMANDI CONTENUTO - Implementazioni STUB
+% ==========================================
+
+% Summary professionale
+\newcommand{\summary}[1]{
+  \section*{Summary}
+  #1
+  \vspace{1em}
+}
+
+% Esperienza lavorativa - 4 parametri: periodo, organizzazione, ruolo, mansioni
+\newcommand{\experience}[4]{
+  \textbf{#3} at #2 (#1)\\
+  \begin{itemize} #4 \end{itemize}
+  \vspace{0.5em}
+}
+
+% Formazione - 4 parametri: anno, istituto, titolo, dettagli
+\newcommand{\education}[4]{
+  \textbf{#3}, #2 (#1)
+  \ifx\relax#4\relax\else\\ #4\fi
+  \vspace{0.5em}
+}
+
+% Eventi artistici - 7 parametri: data, venue, organizzatore, titolo, organico, ruolo, note
+\newcommand{\artisticevent}[7]{
+  \textbf{#4} (#1)\\
+  Venue: #2, Organizer: #3\\
+  Role: #6, Instruments: #5
+  \ifx\relax#7\relax\else\\ Notes: #7\fi
+  \vspace{0.5em}
+}
+
+% Competenze tecniche - 1 parametro: lista items
+\newcommand{\skills}[1]{
+  \section*{Skills}
+  \begin{itemize} #1 \end{itemize}
+}
+
+% Lingue - comando per singola lingua (usato dentro itemize)
+\newcommand{\languageitem}[2]{
+  \item \textbf{#1}: #2
+}
+
+% ==========================================
+% SEZIONI OPZIONALI (per stili che le supportano)
+% ==========================================
+
+% Posizione accademica (per stile academic)
+\newcommand{\academicposition}[5]{
+  \experience{#1}{#2}{#3}{#5}
+}
+
+% Pubblicazione (per stile academic)
+\newcommand{\publication}[6]{
+  \textbf{#2} (#1). "#3". \textit{#4}. #5.
+  \par
+}
+
+% Progetto (per stile creative)
+\newcommand{\project}[4]{
+  \experience{#1}{#2}{#3}{#4}
+}
+
+% ==========================================
+% VALIDAZIONE PARAMETRI
+% ==========================================
+
+% Macro per controllare che tutti i parametri necessari siano definiti
+\newcommand{\validatedata}{
+  \@ifundefined{@name}{\ClassError{cvstyle}{Name not defined. Use \\name{...}}{}}{}
+  \@ifundefined{@role}{\ClassError{cvstyle}{Role not defined. Use \\role{...}}{}}{}
+  \@ifundefined{@city}{\ClassError{cvstyle}{Contacts not defined. Use \\contacts{...}}{}}{}
+}
+
+% ==========================================
+% FONT FALLBACK SYSTEM
+% ==========================================
+
+% Test esistenza font con fallback
+\newcommand{\IfFontExistsTF}[3]{
+  \suppressfontnotfounderror=1
+  \font\testfont="#1" at 10pt
+  \ifx\testfont\nullfont
+    #3  % Font non esiste - esegue fallback
+  \else
+    #2  % Font esiste - esegue codice normale
+  \fi
+  \suppressfontnotfounderror=0
+}
+
+% Sistema di fallback font per tutti gli stili
+\newcommand{\setfontswithfallback}[6]{
+  % #1=primary serif, #2=fallback serif, #3=primary sans, #4=fallback sans, #5=primary mono, #6=fallback mono
+  \IfFontExistsTF{#1}{
+    \setmainfont{#1}
+  }{
+    \setmainfont{#2}
+    \PackageWarning{cvstyle}{Font '#1' not found, using '#2'}
+  }
+  
+  \IfFontExistsTF{#3}{
+    \setsansfont{#3}
+  }{
+    \setsansfont{#4} 
+    \PackageWarning{cvstyle}{Font '#3' not found, using '#4'}
+  }
+  
+  \IfFontExistsTF{#5}{
+    \setmonofont{#5}
+  }{
+    \setmonofont{#6}
+    \PackageWarning{cvstyle}{Font '#5' not found, using '#6'}
+  }
+}
+
+% ==========================================
+% DEBUG E LOGGING
+% ==========================================
+
+\newif\ifcvdebug
+\cvdebugfalse
+
+\newcommand{\cvdebugon}{\cvdebugtrue}
+\newcommand{\cvlog}[1]{
+  \ifcvdebug
+    \typeout{[CV DEBUG] #1}
+  \fi
+}
+
+% Log quando un comando viene ridefinito
+\let\oldrenewcommand\renewcommand
+\renewcommand{\renewcommand}[1]{
+  \cvlog{Redefining command: #1}
+  \oldrenewcommand{#1}
+}
