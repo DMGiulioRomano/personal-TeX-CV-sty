@@ -1,0 +1,166 @@
+%!TEX root = CV_GIULIO_DE_MATTIA.tex
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style_creative}[2025/08/21 Creative CV style - Clean modular]
+
+% ==========================================
+% IMPORT MODULI NECESSARI (diretti, no common)
+% ==========================================
+\RequirePackage{styles/cv_base}                % Comandi dati base (\name, \role, etc.)
+\RequirePackage{styles/cv_fonts_creative}      % Font artistici
+\RequirePackage{styles/cv_geometry_creative}   % Layout creativo
+
+% ==========================================
+% HEADER CREATIVO CON FOTO
+% ==========================================
+\renewcommand{\makeheader}{
+  % Layout a due colonne: foto + info
+  \noindent
+  \begin{minipage}[c]{0.35\textwidth}
+    \ifx\@photo\undefined
+      % Placeholder se non c'è foto
+      \centering
+      {\Large\color{blue!70!black}\faUser}\\
+      {\small No photo}
+    \else
+      \includegraphics[width=\linewidth]{\@photo}
+    \fi
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[c]{0.6\textwidth}
+    {\namefont{\@name}}\\[1cm]
+    {\rolefont{\@role}}\\[6pt]
+    \@city \\ \@phone \\ \@mail \\
+    \ifx\@link\undefined\else\@link\fi
+  \end{minipage}
+  \vspace{1.5em}
+}
+
+% ==========================================
+% SEZIONI CREATIVE
+% ==========================================
+
+% Override sezioni con colori
+\titleformat{\section}[block]
+  {\Large\bfseries\color{blue!70!black}}
+  {}
+  {0pt}
+  {}
+  [\vspace{0.3em}]
+
+\titleformat{\subsection}[block]
+  {\large\bfseries\color{blue!50!black}}
+  {}
+  {0pt}
+  {}
+
+% ==========================================
+% DEFINIZIONE COMANDI (non override - prima definizione)
+% ==========================================
+
+% Summary
+\newcommand{\summary}[1]{
+  \section*{Profilo Professionale}
+  \noindent #1
+  \vspace{1em}
+}
+
+% Experience creativo
+\newcommand{\experience}[4]{
+  \noindent
+  \begin{minipage}[t]{0.2\textwidth}
+    {\footnotesize\color{blue!70!black}\textbf{#1}}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.75\textwidth}
+    {\textbf{#3}}\\
+    {\emph{#2}}\\[-3pt]
+    \begin{itemize}[leftmargin=*, topsep=1pt, itemsep=0pt] #4 \end{itemize}
+  \end{minipage}
+  \vspace{0.8em}
+}
+
+% Eventi artistici creativi (7 parametri)
+\newcommand{\artisticevent}[7]{
+  \noindent
+  \begin{minipage}[t]{0.15\textwidth}
+    {\footnotesize\color{blue!70!black}\textbf{#1}}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.8\textwidth}
+    {\large\textbf{\color{blue!80!black}#4}}\\
+    {\emph{#2}} -- {\small #3}\\[2pt]
+    
+    \begin{description}[leftmargin=0pt, itemsep=1pt, font=\footnotesize\bfseries\color{blue!60!black}]
+      \item[Ruolo:] #6
+      \item[Organico:] #5
+      \ifx\relax#7\relax\else
+      \item[Note:] #7
+      \fi
+    \end{description}
+  \end{minipage}
+  \vspace{1em}
+}
+
+% Education creativa
+\newcommand{\education}[4]{
+  \noindent
+  \begin{minipage}[t]{0.2\textwidth}
+    {\footnotesize\color{blue!70!black}\textbf{#1}}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.75\textwidth}
+    {\textbf{#3}}\\
+    {\emph{#2}}\\[-2pt]
+    \ifx\relax#4\relax\else
+      {\small #4}
+    \fi
+  \end{minipage}
+  \vspace{0.7em}
+}
+
+% Skills creative
+\newcommand{\skills}[1]{
+  \begin{itemize}[leftmargin=0.8em, itemsep=2pt, topsep=3pt, 
+                  label={\color{blue!70!black}\small\faCode}]
+    #1
+  \end{itemize}
+}
+
+% Lingue (lista semplice, non tabellare)
+\newcommand{\languageitem}[2]{
+  \item \textbf{\color{blue!70!black}#1}: #2
+}
+
+% ==========================================
+% ELEMENTI GRAFICI CREATIVI
+% ==========================================
+
+% Separatore artistico
+\newcommand{\cvseparator}{
+  \vspace{0.5em}
+  \begin{center}
+    {\color{blue!70!black}\rule{0.3\textwidth}{0.8pt}}
+  \end{center}
+  \vspace{0.5em}
+}
+
+% Highlight per competenze tecniche
+\newcommand{\techskill}[1]{\texttt{\footnotesize\color{blue!60!black}#1}}
+
+% Badge per progetti
+\newcommand{\projectbadge}[1]{%
+  \tikz[baseline=-0.6ex]\node[draw=blue!70!black, fill=blue!10!white, 
+                             rounded corners=2pt, inner sep=2pt, 
+                             font=\footnotesize] {#1};%
+}
+
+% Layout a due colonne per sezioni compatte
+\newcommand{\twocolsection}[2]{
+  \begin{minipage}[t]{0.48\textwidth}
+    #1
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    #2
+  \end{minipage}
+}

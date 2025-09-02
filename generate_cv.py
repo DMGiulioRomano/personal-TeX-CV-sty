@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 CV Generator - Genera file LaTeX da dati YAML
-Uso: python generate_cv.py [--style academic|european] [--output filename]
+Uso: python generate_cv.py [--style europass|creative|academic] [--output filename]
 """
 
 import yaml
@@ -142,16 +142,14 @@ class CVGenerator:
             if 'programma' in event:
                 # Evento con più brani (es. Generazioni Elettroacustiche)
                 for brano in event['programma']:
-                    latex += f"\\artisticevent{{{event['data']}}}{{{self.latex_escape(event['venue'])}}}{{{self.latex_escape(event['organizzatore'])}}}{{{self.latex_escape(brano['titolo'])}}}{{{self.latex_escape(brano['organico'])}}}{{{self.latex_escape(brano.get('note', brano['ruolo']))}}}\n\n"
+                    latex += f"\\artisticevent{{{event['data']}}}{{{self.latex_escape(event['venue'])}}}{{{self.latex_escape(event['organizzatore'])}}}{{{self.latex_escape(brano['titolo'])}}}{{{self.latex_escape(brano['organico'])}}}{{{self.latex_escape(brano['ruolo'])}}}{{{self.latex_escape(brano.get('note', ''))}}}\n\n"
             else:
-                # Evento singolo
+                # Evento singolo - FIXED: usa sempre 7 parametri
                 organico = event.get('organico', '')
                 if 'collaboratori' in event:
                     organico += f" (con {event['collaboratori']})" if organico else f"Con {event['collaboratori']}"
                 
-                programma = event.get('note', f"{event['tipo']} - {event['ruolo']}")
-                if 'compositore' in event and event['compositore'] != event.get('ruolo'):
-                    programma = f"Opera di {event['compositore']} - {programma}"
+                programma = event.get('note', f"{event.get('tipo', '')} - {event.get('ruolo', '')}")
                 
                 titolo = event.get('titolo', event.get('evento', ''))
                 
@@ -162,7 +160,7 @@ class CVGenerator:
                     f"{{{self.latex_escape(event['organizzatore'])}}}"  # #3 organizzatore
                     f"{{{self.latex_escape(titolo)}}}"  # #4 titolo
                     f"{{{self.latex_escape(organico)}}}"  # #5 organico
-                    f"{{{self.latex_escape(event.get('ruolo', ''))}}}"  # #6 ruolo (nuovo)
+                    f"{{{self.latex_escape(event.get('ruolo', ''))}}}"  # #6 ruolo
                     f"{{{self.latex_escape(programma)}}}"  # #7 programma/note
                     "\n\n"
                 )
@@ -170,7 +168,7 @@ class CVGenerator:
         return latex
     
     def generate_languages(self) -> str:
-        """Genera le lingue come itemize usando il comando \languageitem"""
+        """FIXED: Genera le lingue come itemize semplice, non tabellare"""
         if 'lingue' not in self.data:
             return ""
         
@@ -181,6 +179,7 @@ class CVGenerator:
             for nome, livello in lang.items():
                 nome_clean = self.latex_escape(nome).replace('\n', ' ').strip()
                 livello_clean = self.latex_escape(livello).replace('\n', ' ').strip()
+                # FIXED: usa \languageitem che ora è definito per liste (non tabelle)
                 latex += f"  \\languageitem{{{nome_clean}}}{{{livello_clean}}}\n"
         
         latex += "\\end{itemize}\n\n"
@@ -293,7 +292,7 @@ class CVGenerator:
         
         return latex
     
-    def generate_main_tex(self, style: str = "european", styles_dir: str = "styles") -> str:
+    def generate_main_tex(self, style: str = "europass", styles_dir: str = "styles") -> str:
         """Genera il file principale LaTeX"""
         latex = f"""%!TEX root = CV_GIULIO_DE_MATTIA.tex
 %!TEX TS-program = xelatex
@@ -313,7 +312,7 @@ class CVGenerator:
 """
         return latex
     
-    def save_files(self, output_dir: str = ".", style: str = "european", styles_dir: str = "styles"):
+    def save_files(self, output_dir: str = ".", style: str = "europass", styles_dir: str = "styles"):
         """Salva i file generati"""
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
@@ -324,7 +323,7 @@ class CVGenerator:
         
         # Genera file principale
         main_content = self.generate_main_tex(style, styles_dir)
-        (output_path / "CV_GIULIO_DE_MATTIA.tex").write_text(main_content, encoding='utf-8')
+        (output_path / f"CV_GIULIO_DE_MATTIA-{style}.tex").write_text(main_content, encoding='utf-8')
         
         print(f"✅ File generati in {output_path}:")
         print(f"   - cv_data.tex")
@@ -336,8 +335,8 @@ class CVGenerator:
 def main():
     parser = argparse.ArgumentParser(description="Genera CV LaTeX da dati YAML")
     parser.add_argument("yaml_file", help="File YAML con i dati del CV")
-    parser.add_argument("--style", choices=["academic", "european"], 
-                       default="european", help="Stile del CV")
+    parser.add_argument("--style", choices=["academic", "europass", "creative"], 
+                       default="europass", help="Stile del CV")
     parser.add_argument("--styles-dir", default="styles", 
                        help="Cartella contenente i file .sty")
     parser.add_argument("--output", "-o", default=".", 
